@@ -48,7 +48,7 @@ def main():
                         display.DS009("Nächster Halt:")
                         text_page = 0
                 else:
-                    display.DS009("CCCamp 2023")
+                    display.DS009(CONFIG_TRAIN)
                 last_switch = now
             time.sleep(1)
         except KeyboardInterrupt:
