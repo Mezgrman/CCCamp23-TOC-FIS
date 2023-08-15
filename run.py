@@ -26,15 +26,31 @@ from _config import *
 def main():
     display = SerialIBISMaster(CONFIG_IBIS_PORT)
     toc = C3TOCAPI()
+
+    trains = toc.get_trains()['trains']
+    last_switch = 0
+    last_update = 0
+    text_page = 0
     
     while True:
         try:
-            trains = toc.get_trains()['trains']
-            if CONFIG_TRAIN in trains:
-                display.DS009(trains[CONFIG_TRAIN]['next_stop']['name'])
-            else:
-                display.DS009("CCCamp 2023")
-            time.sleep(10)
+            now = time.time()
+            if now - last_update >= 10:
+                print("Updating")
+                trains = toc.get_trains()['trains']
+                last_update = now
+            if now - last_switch >= 5:
+                if CONFIG_TRAIN in trains:
+                    if text_page == 0:
+                        display.DS009(trains[CONFIG_TRAIN]['next_stop']['name'])
+                        text_page = 1
+                    elif text_page == 1:
+                        display.DS009("Nächster Halt:")
+                        text_page = 0
+                else:
+                    display.DS009("CCCamp 2023")
+                last_switch = now
+            time.sleep(1)
         except KeyboardInterrupt:
             raise
         except:
