@@ -37,7 +37,10 @@ def main():
             now = time.time()
             if now - last_update >= 10:
                 print("Updating")
-                trains = toc.get_trains()['trains']
+                try:
+                    trains = toc.get_trains()['trains']
+                except:
+                    trains = []
                 last_update = now
             if now - last_switch >= 5:
                 if CONFIG_TRAIN in trains:
