@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import time
+import traceback
 
 from c3toc import C3TOCAPI
 from pyfis.ibis import SerialIBISMaster
@@ -24,16 +25,16 @@ from _config import *
 
 
 def main():
-    display = SerialIBISMaster(CONFIG_IBIS_PORT)
-    toc = C3TOCAPI()
-
-    trains = toc.get_trains()['trains']
-    last_switch = 0
-    last_update = 0
-    text_page = 0
-    
-    while True:
-        try:
+    try:
+        display = SerialIBISMaster(CONFIG_IBIS_PORT)
+        toc = C3TOCAPI()
+        
+        trains = toc.get_trains()['trains']
+        last_switch = 0
+        last_update = 0
+        text_page = 0
+        
+        while True:
             now = time.time()
             if now - last_update >= 10:
                 print("Updating")
@@ -54,14 +55,14 @@ def main():
                     display.DS009(CONFIG_TRAIN)
                 last_switch = now
             time.sleep(1)
-        except KeyboardInterrupt:
-            raise
+    except KeyboardInterrupt:
+        raise
+    except:
+        try:
+            display.port.close()
         except:
-            try:
-                display.port.close()
-            except:
-                pass
-            raise
+            pass
+        raise
 
 
 if __name__ == "__main__":
