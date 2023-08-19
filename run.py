@@ -47,6 +47,7 @@ def main():
                 if CONFIG_TRAIN in trains:
                     if text_page == 0:
                         display.DS009(trains[CONFIG_TRAIN]['next_stop']['name'])
+                        print(trains[CONFIG_TRAIN]['next_stop']['name'])
                         text_page = 1
                     elif text_page == 1:
                         display.DS009("Nächster Halt:")
